@@ -24,30 +24,31 @@ typedef struct node
 
 void CreateList(LinkList &L, int n)
 {
-    LinkList p;
+    LinkList p, s;
     int i;
     L = (LinkList)malloc(sizeof(LNode));
     L -> data = 0;
     L -> link = NULL;
+    s = L;
     for(i = n; i > 0; i--)
     {
         p = (LinkList)malloc(sizeof(LNode));
         scanf("%d", &p -> data);
-        p -> link = L -> link;
-        L -> link = p;
+        p -> link = NULL;
+        s -> link = p;
+        s = p;
     }
 }
 
 void PrintList(LinkList L)
 {
-    LinkList p = L;
+    LinkList p = L -> link;
+    printf("H");
     while(p)
     {
-        printf("%d", p -> data);
-        printf("->");
+        printf("->%d", p -> data);
         p = p -> link;
     }
-    printf("%d",  p -> data);
 }
 
 Status InsertList(LinkList &L, ElemType x, int i)
@@ -70,14 +71,15 @@ Status InsertList(LinkList &L, ElemType x, int i)
 
 void NizhiList(LinkList &L)
 {
-    LinkList p = L -> link, q = L -> link -> link, prev = L;
-    L -> link = NULL;
-    while(p)
+    LinkList p = L -> link, q = L -> link -> link, u;
+    p -> link = NULL;
+    while(q)
     {
-        p -> link = prev;
-        prev = p;
-        p = q;
-        q = q -> link;
+        u = q -> link;
+        q ->link = L ->link;
+        L ->link = q;
+        q = u;
+ 
     }
 }
 
@@ -88,7 +90,8 @@ void DelList(LinkList &L, ElemType mink, ElemType maxk)
     {
         if (p -> data >= mink && p -> data <= maxk)
             pre -> link = p -> link;
-        pre = p;
+        else
+            pre = p;
         p = p -> link;
     }
 }
@@ -97,10 +100,23 @@ int main()
 {
     LinkList L;
     int n, mink, maxk;
-    printf("创建升序单链表的长度为：");
+    ElemType x;
+    printf("Please create a linklist in ascending order.\n");
+    printf("Input the length of the list:");
     scanf("%d", &n);
-    printf("输入单链表：");
+    printf("Input the elements of the list:");
     CreateList(L, n);
+    PrintList(L);
+    printf("Reverse the LinkList\n");
+    NizhiList(L);
+    PrintList(L);
+    printf("\n");
+    printf("Input mink:\n");
+    scanf("%d", &mink);
+    printf("Input maxk:\n");
+    scanf("%d", &maxk);
+    printf("Delete elements between mink and maxk\n");
+    DelList(L, mink, maxk);
     PrintList(L);
 }
 
