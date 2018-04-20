@@ -70,38 +70,43 @@ Status ExchangeBT(BiTree T)
     return OK;
 }
 
-BiTree SearchX(BiTree T, TElemType x)
+BiTree SearchX(BiTree T, TElemType e)
 {
     BiTree X;
-    if (T -> data == x)
-        X = T;
+    if(!T)
+        return NULL;
+    else if(T -> data == e)
+        return T;
     else
     {
-        SearchX(T -> lchild, x);
-        SearchX(T -> rchild, x);
+        X = SearchX(T -> lchild, e);
+        if(X)
+            return X;
+        return SearchX(T -> rchild, e);
     }
-    return X;
 }
-int Count(BiTree T)
+
+int Count(BiTree T, int &count)
 {
-    static int count = 0;
     if(T)
     {
         if(T -> rchild == NULL && T-> lchild == NULL)
             count++;
         else
         {
-            count = Count(T -> lchild);
-            count = Count(T -> rchild);
+            Count(T -> lchild, count);
+            Count(T -> rchild, count);
         }
     }
     return count;
+
+    
 }
 
 int CountLeaf(BiTree T, TElemType x, int &count)
 {
     BiTree X = SearchX(T, x);
-    count = Count(X);
+    Count(X,count);
     return count;
 }
 
@@ -111,7 +116,7 @@ void DispBiTree(BiTree T, int level)
     {
         DispBiTree(T -> rchild, level+1);
         for(int i = 1; i< level; i++)
-        printf("#");
+            printf("#");
         printf("%c\n", T -> data);
         DispBiTree(T -> lchild, level+1);
             
@@ -119,14 +124,18 @@ void DispBiTree(BiTree T, int level)
 }
 int main() {
     BiTree T;
-    int count;
+    int count = 0;
+
     printf("Create a Binary Tree:\n");
     CreateBT(T);
     DispBiTree(T, 1);
     printf("Test exchange\n");
     ExchangeBT(T);
     DispBiTree(T, 1);
-    printf("Test countleaf\n");
-    CountLeaf(T, 'a', count);
+
+    CountLeaf(T, 'd' , count);
+
+    printf("count = %d", count);
     
 }
+
